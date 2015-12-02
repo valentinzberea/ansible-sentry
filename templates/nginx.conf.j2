@@ -11,7 +11,7 @@ server {
     server_name {{sentry_hostname}};
 
     {% if sentry_ssl_certificate %}
-        ssl on;
+        listen 443 ssl;
         ssl_certificate {{ sentry_ssl_certificate }};
         ssl_certificate_key {{ sentry_ssl_certificate_key }};
 
