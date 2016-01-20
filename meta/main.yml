@@ -3,11 +3,11 @@
 dependencies:
 - Stouts.nginx
 - Stouts.python
-- Stouts.redis
+- ANXS.postgresql
+- DavidWittman.redis
 
 galaxy_info:
-  author: klen
-  company: Stouts
+  author: lepture
   description: Install and setup Sentry
   license: MIT
   platforms:
