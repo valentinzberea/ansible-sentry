@@ -1,0 +1,32 @@
+[program:sentry-web]
+directory={{sentry_home}}
+environment=SENTRY_CONF="{{sentry_home}}/config.py"
+command={{sentry_home}}/env/bin/sentry start
+user={{sentry_user}}
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=syslog
+stderr_logfile=syslog
+
+[program:sentry-worker]
+directory={{sentry_home}}
+environment=SENTRY_CONF="{{sentry_home}}/config.py"
+command={{sentry_home}}/env/bin/sentry celery worker
+user={{sentry_user}}
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=syslog
+stderr_logfile=syslog
+
+[program:sentry-beat]
+directory={{sentry_home}}
+environment=SENTRY_CONF="{{sentry_home}}/config.py"
+command={{sentry_home}}/env/bin/sentry celery beat
+user={{sentry_user}}
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=syslog
+stderr_logfile=syslog

@@ -54,12 +54,6 @@
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
 
-- include: services.deb.yml
-  when: ansible_os_family == 'Debian'
-
-- include: services.red.yml
-  when: ansible_os_family == 'RedHat'
-
 - name: Configure Sentry
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
   register: config
@@ -75,7 +69,7 @@
   sudo_user: "{{sentry_user}}"
 
 - name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry collectstatic --noinput"
+  shell: "{{sentry_home}}/sentry django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   sudo: yes
@@ -95,9 +89,3 @@
   template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
   notify: [nginx reload]
   when: nginx_enabled
-
-- name: Ensure Sentry is started
-  service: name={{item}} state=started
-  with_items:
-  - sentry-web
-  - sentry-worker
