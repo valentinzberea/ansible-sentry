@@ -39,10 +39,6 @@
   sudo_user: "{{sentry_user}}"
   when: redis_enabled
 
-- name: Install requirements for MySQL
-  pip: name=mysql-python executable={{ sentry_home }}/env/bin/pip
-  when: "'mysql' in sentry_db_engine|lower()"
-
 - name: Install requirements for Postgresql
   pip: name=psycopg2 executable={{ sentry_home }}/env/bin/pip
   when: "'psycopg2' in sentry_db_engine|lower()"
