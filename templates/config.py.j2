@@ -170,3 +170,8 @@ SERVER_EMAIL = '{{sentry_server_email}}'
 {% if mailgun_api_key %}
 MAILGUN_API_KEY = '{{mailgun_api_key}}'
 {% endif %}
+
+# Additional settings
+{% for option in sentry_config_additional or [] %}
+{{option}}
+{% endfor %}
