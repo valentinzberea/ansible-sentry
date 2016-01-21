@@ -55,9 +55,17 @@ server {
         limit_req zone=two burst=10 nodelay;
     }
 
-    location /_static/ {
+    {% if sentry_static_version is defined %}
+    location /_static/{{sentry_static_version}}/ {
         access_log off;
-        root {{sentry_home}};
+        alias {{sentry_home}}/_static;
         expires max;
     }
+    {% else %}
+    location ^~ /_static/([0-9a-f]\{32\})/ {
+        access_log off;
+        alias {{sentry_home}}/_static;
+        expires max;
+    }
+    {% endif %}
 }
