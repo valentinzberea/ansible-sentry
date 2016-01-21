@@ -123,10 +123,8 @@ SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 # Any Django storage backend is compatible with Sentry. For more solutions see
 # the django-storages package: https://django-storages.readthedocs.org/en/latest/
 
-SENTRY_FILESTORE = 'django.core.files.storage.FileSystemStorage'
-SENTRY_FILESTORE_OPTIONS = {
-    'location': '/tmp/sentry-files',
-}
+SENTRY_FILESTORE = '{{sentry_filestore}}'
+SENTRY_FILESTORE_OPTIONS = {{sentry_filestore_options|to_nice_json}}
 
 ##############
 # Web Server #
@@ -167,9 +165,11 @@ SERVER_EMAIL = '{{sentry_server_email}}'
 
 # If you're using mailgun for inbound mail, set your API key and configure a
 # route to forward to /api/hooks/mailgun/inbound/
-{% if mailgun_api_key %}
+{% if mailgun_api_key is defined %}
 MAILGUN_API_KEY = '{{mailgun_api_key}}'
 {% endif %}
+
+ALLOWED_HOSTS = {{sentry_allowed_hosts}}
 
 # Additional settings
 {% for option in sentry_config_additional or [] %}

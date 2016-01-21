@@ -28,21 +28,6 @@
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
-- name: Install requirements for Redis
-  pip: name={{item}} executable={{sentry_home}}/env/bin/pip
-  with_items:
-    - redis
-    - hiredis
-    - nydus
-    - django-redis-cache
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
-  when: redis_enabled
-
-- name: Install requirements for Postgresql
-  pip: name=psycopg2 executable={{ sentry_home }}/env/bin/pip
-  when: "'psycopg2' in sentry_db_engine|lower()"
-
 - name: Install extensions
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
   with_items: sentry_extensions
@@ -55,7 +40,11 @@
   register: config
   notify: [sentry restart]
 
-- file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
+- name: Configure Supervisor
+  template: src=supervisor.conf.j2 dest={{supervisor_incdir}}/sentry.conf
+
+- name: Ensure sentry directory owner
+  file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
   shell: "{{sentry_home}}/sentry upgrade --noinput"
@@ -68,16 +57,6 @@
   shell: "{{sentry_home}}/sentry django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
-
-- name: Setup initial data
-  template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
-  register: setup
-
-- shell: env/bin/python setup.py
-    chdir={{sentry_home}}
-  when: setup.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
 

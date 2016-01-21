@@ -3,6 +3,7 @@
 dependencies:
 - Stouts.nginx
 - Stouts.python
+- Stouts.supervisor
 - ANXS.postgresql
 - DavidWittman.redis
 

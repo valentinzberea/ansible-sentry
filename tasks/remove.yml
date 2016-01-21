@@ -1,13 +1,11 @@
 ---
 
 - name: Ensure Sentry is stopped
-  service: name={{item}} state=stopped
-  with_items:
-  - sentry-web
-  - sentry-worker
-
-- name: Remove Upstart configuration
-  file: path=/etc/init/{{item}}.conf state=absent
+  supervisorctl: name={{item}} state=stopped
   with_items:
     - sentry-web
     - sentry-worker
+    - sentry-beat
+
+- name: Remove Supervisor configuration
+  file: path={{supervisor_incdir}}/sentry.conf state=absent
