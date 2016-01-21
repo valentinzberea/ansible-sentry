@@ -53,12 +53,24 @@
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
+- name: Clean Sentry Database
+  cron: job="{{sentry_home}}/sentry cleanup --days=30" minute=0 hour=0 user={{sentry_user}}
+  when: sentry_cron
+
 - name: Collect sentry static files
   shell: "{{sentry_home}}/sentry django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   sudo: yes
   sudo_user: "{{sentry_user}}"
+
+- name: Create nginx public key
+  copy: content="{{ sentry_nginx_public_key }}" dest="{{ sentry_ssl_certificate }}"
+  when: sentry_nginx_public_key is defined and sentry_ssl_certificate
+
+- name: Create nginx private key
+  copy: content="{{ sentry_nginx_private_key }}" dest="{{ sentry_ssl_certificate_key }}"
+  when: sentry_nginx_private_key is defined and sentry_ssl_certificate_key
 
 - name: Configure Nginx
   template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
