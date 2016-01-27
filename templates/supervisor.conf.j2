@@ -6,8 +6,13 @@ user={{sentry_user}}
 autostart=true
 autorestart=true
 redirect_stderr=true
+{% if sentry_logfile_dir %}
+stdout_logfile={{sentry_logfile_dir}}/sentry_web.log
+stderr_logfile={{sentry_logfile_dir}}/sentry_web.log
+{% else %}
 stdout_logfile=syslog
 stderr_logfile=syslog
+{% endif %}
 
 [program:sentry-worker]
 directory={{sentry_home}}
@@ -17,8 +22,13 @@ user={{sentry_user}}
 autostart=true
 autorestart=true
 redirect_stderr=true
+{% if sentry_logfile_dir %}
+stdout_logfile={{sentry_logfile_dir}}/sentry_work.log
+stderr_logfile={{sentry_logfile_dir}}/sentry_work.log
+{% else %}
 stdout_logfile=syslog
 stderr_logfile=syslog
+{% endif %}
 
 [program:sentry-beat]
 directory={{sentry_home}}
@@ -28,5 +38,10 @@ user={{sentry_user}}
 autostart=true
 autorestart=true
 redirect_stderr=true
+{% if sentry_logfile_dir %}
+stdout_logfile={{sentry_logfile_dir}}/sentry_beat.log
+stderr_logfile={{sentry_logfile_dir}}/sentry_beat.log
+{% else %}
 stdout_logfile=syslog
 stderr_logfile=syslog
+{% endif %}
