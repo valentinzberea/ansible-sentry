@@ -11,7 +11,7 @@
 
 - name: Ensure sentry logfile dir exists
   file: state=directory path={{sentry_logfile_dir}} owner={{sentry_user}} recurse=yes
-  when: sentry_logfile_dir
+  when: sentry_logfile_dir != ""
 
 # Try to create virtualenv only if it doesn't exist.
 # This way we can re-run the playbook without errors.
