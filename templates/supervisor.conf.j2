@@ -17,7 +17,7 @@ stderr_logfile=syslog
 [program:sentry-worker]
 directory={{sentry_home}}
 environment=SENTRY_CONF="{{sentry_home}}/config.py"
-command={{sentry_home}}/env/bin/sentry celery worker
+command={{sentry_home}}/env/bin/sentry run worker
 user={{sentry_user}}
 autostart=true
 autorestart=true
@@ -33,7 +33,7 @@ stderr_logfile=syslog
 [program:sentry-beat]
 directory={{sentry_home}}
 environment=SENTRY_CONF="{{sentry_home}}/config.py"
-command={{sentry_home}}/env/bin/sentry celery beat
+command={{sentry_home}}/env/bin/sentry run cron
 user={{sentry_user}}
 autostart=true
 autorestart=true
